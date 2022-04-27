@@ -1,5 +1,9 @@
 ﻿@page "/"
 
+@using PropertySearch.Services
+
+@inject IStationService stationService
+
 <PageTitle>Index</PageTitle>
 
 <h1>Hello, world!</h1>
@@ -7,3 +11,12 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+<MatButton @onclick="GetStationAsync">Test</MatButton>
+
+@code
+{
+    private async Task GetStationAsync()
+    {
+        await stationService.SearchStationAsync("三軒茶屋");
+    }
+}
