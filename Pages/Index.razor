@@ -6,17 +6,18 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<p>
+    <MatTextField @bind-Value="@stationName"></MatTextField>
+</p>
 
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
 <MatButton @onclick="GetStationAsync">Test</MatButton>
 
 @code
 {
+    private string stationName = "";
+
     private async Task GetStationAsync()
     {
-        await stationService.SearchStationAsync("三軒茶屋");
+        await stationService.SearchStationAsync(stationName);
     }
 }
