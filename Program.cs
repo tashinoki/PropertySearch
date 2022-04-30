@@ -11,7 +11,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<IStationService, StationService>();
-builder.Services.AddSingleton<IYahooTransitApiClient, YahooTransitApiClient>();
 builder.Services.AddSingleton<IStationApiClient, StationApiClient>();
 
 builder.Services.AddMatBlazor();

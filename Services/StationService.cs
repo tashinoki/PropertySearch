@@ -12,11 +12,9 @@ namespace PropertySearch.Services
     public class StationService: IStationService
     {
         private readonly IStationApiClient _stationApiClient;
-        private readonly IYahooTransitApiClient _yahooTransitApiClient;
 
         public StationService(
-            IStationApiClient stationApiClient,
-            IYahooTransitApiClient yahooTransitApiClient)
+            IStationApiClient stationApiClient)
         {
             _stationApiClient = stationApiClient;
             _yahooTransitApiClient = yahooTransitApiClient;
