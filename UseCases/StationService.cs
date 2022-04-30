@@ -2,14 +2,14 @@
 using PropertySearch.Infrastructure;
 using PropertySearch.Models;
 
-namespace PropertySearch.Services
+namespace PropertySearch.UseCases
 {
-    interface IStationService
+    interface IStationUseCase
     {
         public Task SearchStationAsync(string name);
     }
 
-    public class StationService: IStationService
+    public class StationService: IStationUseCase
     {
         private readonly IStationApiClient _stationApiClient;
 
