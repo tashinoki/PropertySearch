@@ -17,7 +17,6 @@ namespace PropertySearch.Services
             IStationApiClient stationApiClient)
         {
             _stationApiClient = stationApiClient;
-            _yahooTransitApiClient = yahooTransitApiClient;
         }
 
         public async Task SearchStationAsync(string name)
