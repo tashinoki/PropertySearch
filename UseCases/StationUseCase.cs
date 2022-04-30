@@ -9,11 +9,11 @@ namespace PropertySearch.UseCases
         public Task SearchStationAsync(string name);
     }
 
-    public class StationService: IStationUseCase
+    public class StationUseCase: IStationUseCase
     {
         private readonly IStationApiClient _stationApiClient;
 
-        public StationService(
+        public StationUseCase(
             IStationApiClient stationApiClient)
         {
             _stationApiClient = stationApiClient;
