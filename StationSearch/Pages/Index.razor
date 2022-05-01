@@ -1,0 +1,23 @@
+﻿@page "/"
+
+@using StationSearch.UseCases
+
+@inject IStationUseCase stationUseCase
+
+<PageTitle>Index</PageTitle>
+
+<p>
+    <MatTextField @bind-Value="@stationName"></MatTextField>
+</p>
+
+<MatButton @onclick="GetStationAsync">Test</MatButton>
+
+@code
+{
+    private string stationName = "";
+
+    private async Task GetStationAsync()
+    {
+        await stationUseCase.SearchStationAsync(stationName);
+    }
+}
