@@ -1,6 +1,6 @@
-﻿using Azure.Data.Tables;
-using PropertySearch.Infrastructure;
+﻿using PropertySearch.Infrastructure;
 using PropertySearch.Models;
+using PropertySearch.Services;
 
 namespace PropertySearch.UseCases
 {
@@ -12,16 +12,19 @@ namespace PropertySearch.UseCases
     public class StationUseCase: IStationUseCase
     {
         private readonly IStationApiClient _stationApiClient;
+        private readonly ITrainTransitService _trainTrainsitService;
 
         public StationUseCase(
-            IStationApiClient stationApiClient)
+            IStationApiClient stationApiClient,
+            ITrainTransitService trainTransitService)
         {
             _stationApiClient = stationApiClient;
+            _trainTrainsitService = trainTransitService;
         }
 
         public async Task SearchStationAsync(string name)
         {
-            await _stationApiClient.GetStationAsync(name, PrefectureCode.Tokyo);
+            await _trainTrainsitService.SearchTrainTransitAsync(name, "渋谷");
             return;
         }
     }
