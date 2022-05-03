@@ -39,10 +39,15 @@ namespace StationSearch.Services
 
             var queryDocument = await context.OpenAsync("https://api.trip2.jp");
             var form = queryDocument.QuerySelector<IHtmlFormElement>("form");
-            var resultDocument = await form.SubmitAsync(new { q = "anglesharp" });
+            var src = queryDocument.GetElementById("src_value");
+            src.InnerHtml = "三軒茶屋";
+            var dest = queryDocument.GetElementById("dst_value");
+            dest.InnerHtml = "渋谷";
+            var resultDocument = await form.SubmitAsync();
 
             return "";
         }
+
 
         private async Task<string> Scraip()
         {
