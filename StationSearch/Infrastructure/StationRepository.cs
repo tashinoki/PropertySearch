@@ -1,12 +1,14 @@
 ﻿using StationSearch.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Azure.Data.Tables;
+using Azure;
 
 namespace StationSearch.Infrastructure
 {
     public interface IStationRepository
     {
-        public Task<StationApiResponse?> GetStationAsync(string name, PrefectureCode code);
+        public Task<Station?> GetStationAsync(string name, PrefectureCode code);
     }
 
     public class StationRepository : IStationRepository
@@ -17,7 +19,7 @@ namespace StationSearch.Infrastructure
             Timeout = TimeSpan.FromSeconds(300)
         };
 
-        public async Task<StationApiResponse?> GetStationAsync(string name, PrefectureCode code)
+        public async Task<Station?> GetStationAsync(string name, PrefectureCode code)
 
         {
             var param = new Dictionary<string, string>()
@@ -35,20 +37,40 @@ namespace StationSearch.Infrastructure
             {
                 return null;
             }
-            return content;
+
+            var station = content.Response.Station.FirstOrDefault();
+            
+            if (station is null)
+            {
+                return null;
+            }
+
+            return new Station(station.Name, station.Prefecture, code);
         }
     }
 
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
-    public record StationApiResponse(Response Response)
+    record StationApiResponse(Response Response)
     { }
 
 
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
-    public record Response(IReadOnlyList<StationInformation> Station, string Error)
+    record Response(IReadOnlyList<StationInformation> Station, string Error)
     { }
 
     [JsonObject(NamingStrategyType = typeof(CamelCaseNamingStrategy))]
-    public record StationInformation(string Name, string Prefecture, string Line)
+    record StationInformation(string Name, string Prefecture, string Line)
     { }
+
+
+    class StationEntity : ITableEntity
+    {
+        public string PartitionKey { get; set; }
+
+        public string RowKey { get; set; }
+
+        public DateTimeOffset? Timestamp { get; set; }
+
+        public ETag ETag { get; set; }
+    }
 }
