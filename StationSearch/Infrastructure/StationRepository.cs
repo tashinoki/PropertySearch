@@ -6,7 +6,7 @@ namespace StationSearch.Infrastructure
 {
     public interface IStationRepository
     {
-        public Task<StationApiResponse> GetStationAsync(string name, PrefectureCode code);
+        public Task<StationApiResponse?> GetStationAsync(string name, PrefectureCode code);
     }
 
     public class StationRepository : IStationRepository
@@ -17,7 +17,7 @@ namespace StationSearch.Infrastructure
             Timeout = TimeSpan.FromSeconds(300)
         };
 
-        public async Task<StationApiResponse> GetStationAsync(string name, PrefectureCode code)
+        public async Task<StationApiResponse?> GetStationAsync(string name, PrefectureCode code)
 
         {
             var param = new Dictionary<string, string>()
