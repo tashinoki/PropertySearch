@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @using StationSearch.UseCases
+@using StationSearch.Services.TrainTransit
 
 @inject IStationUseCase stationUseCase
 
@@ -10,14 +11,36 @@
     <MatTextField @bind-Value="@stationName"></MatTextField>
 </p>
 
+
+<div>
+    @if(_trainTransits == null)
+    {
+        <div>Please specify station name</div>
+    }
+    else
+    {
+        @foreach (var transit in _trainTransits)
+        {
+            <div>@transit.Ways[0].SrcStation.StationName から @transit.Ways[0].DstStation.StationName まで @transit.Ways[0].Min </div>
+        }
+    }
+</div>
+
 <MatButton @onclick="GetStationAsync">Test</MatButton>
 
 @code
 {
     private string stationName = "";
+    private IReadOnlyList<TrainTransitResponse> _trainTransits;
+
 
     private async Task GetStationAsync()
     {
-        await stationUseCase.SearchStationAsync(stationName);
+        var transits = await stationUseCase.SearchStationAsync(stationName);
+
+        if (!transits.IsValid)
+        {}
+
+        _trainTransits = transits.TrainTransits;
     }
 }
