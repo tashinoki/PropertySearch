@@ -1,38 +1,25 @@
-﻿namespace StationSearch.Services.TrainTransit
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+namespace StationSearch.Services.TrainTransit
 {
-    public class TrainTransitResponse
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    public record TrainTransitResponse(IReadOnlyList<TrainTransitWay> Ways)
     {
-        public IReadOnlyList<TrainTransitWay> Ways { get; set; }
     }
 
-    public class TrainTransitWay
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    public record TrainTransitWay(Station SrcStation, Station DstStation, Line Line, int Min)
     {
-        public Station SrcStation { get; set; }
-
-        public Station DstStation { get; set; }
-
-        public Line Line { get; set; }
-
-        public int Min { get; set; }
     }
 
-    public class Station
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    public record Station(string StationName, string StationNameHira, string StationNameRoma, string StationNumber)
     {
-        public string StationName { get; set; }
-
-        public string StationNameHira { get; set; }
-
-        public string StationNameRoma { get; set; }
-
-        public string StationNumber { get; set; }
     }
 
-    public class Line
+    [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
+    public record Line(string LineName, string StationCount, string LinePrefix)
     {
-        public string LineName { get; set; }
-
-        public string StationCount { get; set; }
-
-        public string LinePrefix { get; set; }
     }
 }

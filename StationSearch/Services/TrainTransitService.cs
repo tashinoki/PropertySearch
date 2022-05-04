@@ -1,13 +1,13 @@
-﻿using System.Net.Http.Headers;
-using AngleSharp;
-using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
+﻿using Newtonsoft.Json;
+using StationSearch.Models;
+using StationSearch.Services.TrainTransit;
+using System.Net;
 
 namespace StationSearch.Services
 {
     public interface ITrainTransitService
     {
-        public Task<string> SearchTrainTransitAsync(string startStation, string destinationStation);
+        public Task<string> SearchTrainTransitAsync(string srctStation);
     }
 
     public class TrainTransitService : ITrainTransitService
@@ -18,45 +18,36 @@ namespace StationSearch.Services
             Timeout = TimeSpan.FromSeconds(300)
         };
 
-        public async Task<string> SearchTrainTransitAsync(string startStation, string destinationStation)
+        public async Task<string> SearchTrainTransitAsync(string srctStation)
         {
-            //var parameters = new Dictionary<string, string>
-            //{
-            //    { "src", startStation },
-            //    { "dst", destinationStation },
-            //    { "key", "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffff" }
-            //};
-
-            //var requestMessage = new HttpRequestMessage
-            //{
-            //    Method = HttpMethod.Get,
-            //    RequestUri = new Uri($"https://api.trip2.jp/ex/tokyo/v1.0/json?{ await new FormUrlEncodedContent(parameters).ReadAsStringAsync() }")
-            //};
-            //requestMessage.SetBrowserRequestMode(BrowserRequestMode.NoCors);
-
-            //var response = await _httpClient.SendAsync(requestMessage);
-            var context = BrowsingContext.New(Configuration.Default.WithDefaultLoader());
-
-            var queryDocument = await context.OpenAsync("https://api.trip2.jp");
-            var form = queryDocument.QuerySelector<IHtmlFormElement>("form");
-            var src = queryDocument.GetElementById("src_value");
-            src.InnerHtml = "三軒茶屋";
-            var dest = queryDocument.GetElementById("dst_value");
-            dest.InnerHtml = "渋谷";
-            var resultDocument = await form.SubmitAsync();
-
+            var transit = await Task.WhenAll(
+                SearchTransitToDestination(srctStation, DestinationStations.ShibuyaStation),
+                SearchTransitToDestination(srctStation, DestinationStations.OmoteSandoStation),
+                SearchTransitToDestination(srctStation, DestinationStations.YokohamaStation),
+                SearchTransitToDestination(srctStation, DestinationStations.AirportStation),
+                SearchTransitToDestination(srctStation, DestinationStations.ShinagawaStawtion)
+                );
             return "";
         }
 
-
-        private async Task<string> Scraip()
+        private async Task<TrainTransitResponse> SearchTransitToDestination(string srcStation, string dstStation)
         {
-            var context = BrowsingContext.New(Configuration.Default.WithDefaultLoader());
+            var parameters = new Dictionary<string, string>
+            {
+                { "src", srcStation },
+                { "dst", dstStation },
+                { "key", "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeeeffffffffff" }
+            };
 
-            var queryDocument = await context.OpenAsync("https://api.trip2.jp");
-            var form = queryDocument.QuerySelector<IHtmlFormElement>("form");
-            var resultDocument = await form.SubmitAsync(new { q = "anglesharp" });
-            return "";
+            var response = await _httpClient.GetAsync($"?{ await new FormUrlEncodedContent(parameters).ReadAsStringAsync() }");
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return default(TrainTransitResponse);
+            }
+
+            var content = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<TrainTransitResponse>(content);
         }
     }
 }

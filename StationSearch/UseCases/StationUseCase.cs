@@ -19,7 +19,7 @@ namespace StationSearch.UseCases
 
         public async Task SearchStationAsync(string name)
         {
-            await _trainTrainsitService.SearchTrainTransitAsync(name, "渋谷");
+            await _trainTrainsitService.SearchTrainTransitAsync(name);
             return;
         }
     }
