@@ -2,6 +2,7 @@ using MatBlazor;
 using StationSearch.Data;
 using StationSearch.Services;
 using StationSearch.UseCases;
+using StationSearch.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddMatBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddSingleton<ITrainTransitService, TrainTransitService>();
 builder.Services.AddSingleton<IStationUseCase, StationUseCase>();
+builder.Services.AddSingleton<IStationRepository, StationRepository>();
 
 var app = builder.Build();
 

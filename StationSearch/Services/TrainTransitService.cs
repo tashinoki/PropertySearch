@@ -7,7 +7,7 @@ namespace StationSearch.Services
 {
     public interface ITrainTransitService
     {
-        public Task<string> SearchTrainTransitAsync(string srctStation);
+        public Task<TrainTransitResponse[]> SearchTrainTransitAsync(string srctStation);
     }
 
     public class TrainTransitService : ITrainTransitService
@@ -18,16 +18,15 @@ namespace StationSearch.Services
             Timeout = TimeSpan.FromSeconds(300)
         };
 
-        public async Task<string> SearchTrainTransitAsync(string srctStation)
+        public Task<TrainTransitResponse[]> SearchTrainTransitAsync(string srctStation)
         {
-            var transit = await Task.WhenAll(
+            return Task.WhenAll(
                 SearchTransitToDestination(srctStation, DestinationStations.ShibuyaStation),
                 SearchTransitToDestination(srctStation, DestinationStations.OmoteSandoStation),
                 SearchTransitToDestination(srctStation, DestinationStations.YokohamaStation),
                 SearchTransitToDestination(srctStation, DestinationStations.AirportStation),
                 SearchTransitToDestination(srctStation, DestinationStations.ShinagawaStawtion)
                 );
-            return "";
         }
 
         private async Task<TrainTransitResponse> SearchTransitToDestination(string srcStation, string dstStation)
