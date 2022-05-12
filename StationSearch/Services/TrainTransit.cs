@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace StationSearch.Services.TrainTransit
+namespace StationSearch.Services.TrainTransitApi
 {
     [JsonObject(NamingStrategyType = typeof(SnakeCaseNamingStrategy))]
     public record TrainTransitResponse(IReadOnlyList<TrainTransitWay> Ways)
