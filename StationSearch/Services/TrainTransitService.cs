@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using StationSearch.Models;
-using StationSearch.Services.TrainTransit;
+using StationSearch.Services.TrainTransitApi;
 using System.Net;
 
 namespace StationSearch.Services
 {
     public interface ITrainTransitService
     {
-        public Task<TrainTransitResponse[]> SearchTrainTransitAsync(string srctStation);
+        public Task<IReadOnlyList<TrainTransit>> SearchTrainTransitAsync(string srctStation);
     }
 
     public class TrainTransitService : ITrainTransitService
@@ -18,15 +18,17 @@ namespace StationSearch.Services
             Timeout = TimeSpan.FromSeconds(300)
         };
 
-        public Task<TrainTransitResponse[]> SearchTrainTransitAsync(string srctStation)
+        public async Task<IReadOnlyList<TrainTransit>> SearchTrainTransitAsync(string srctStation)
         {
-            return Task.WhenAll(
+            IReadOnlyList<TrainTransitResponse> traintransit = await Task.WhenAll(
                 SearchTransitToDestination(srctStation, DestinationStations.ShibuyaStation),
                 SearchTransitToDestination(srctStation, DestinationStations.OmoteSandoStation),
                 SearchTransitToDestination(srctStation, DestinationStations.YokohamaStation),
                 SearchTransitToDestination(srctStation, DestinationStations.AirportStation),
                 SearchTransitToDestination(srctStation, DestinationStations.ShinagawaStawtion)
                 );
+
+            return traintransit.Select(t => new TrainTransit(t.Ways)).ToList().AsReadOnly();
         }
 
         private async Task<TrainTransitResponse> SearchTransitToDestination(string srcStation, string dstStation)
